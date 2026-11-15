@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Life Tracker</title>
+<meta name="theme-color" content="#FF8A3D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Life Tracker">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EAF2FF;--card:#fff;--ink:#1B1B3A;--mut:#55557a;--line:#1B1B3A;--pink:#FF5C8A;--yel:#FFD23F;--mint:#2EC4A0;--blue:#4D7CFE;--ora:#FF8A3D;--pur:#8E5CF7;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12122A;--card:#1F1F44;--ink:#F2F2FF;--mut:#A9A9D0;--line:#6F6FB5;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12122A;--card:#1F1F44;--ink:#F2F2FF;--mut:#A9A9D0;--line:#6F6FB5;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.5 Nunito,system-ui,sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:16px}
+h1,h2{font-family:Fredoka,Nunito,sans-serif;margin:0}
+h1{font-size:30px}h2{font-size:21px;margin-bottom:8px}
+p{margin:4px 0}.mut{color:var(--mut);font-size:14px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;box-shadow:4px 4px 0 var(--line);padding:16px;margin-bottom:16px}
+.quote{border-left:12px solid var(--pink);font:500 19px/1.4 Fredoka,Nunito,sans-serif;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.streak{background:var(--ora);color:#1B1B3A;border:2px solid var(--line);border-radius:22px;box-shadow:5px 5px 0 var(--line);padding:18px;margin:12px 0 18px;display:grid;gap:14px;grid-template-columns:1.3fr 1fr}
+.big{font:700 60px/1 Fredoka,sans-serif}.big small{font-size:19px;margin-left:6px}
+.stats{display:flex;gap:18px;margin-top:10px;flex-wrap:wrap}
+.stats b{display:block;font:700 22px Fredoka,sans-serif}
+.side{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.ring{width:88px;height:88px;border-radius:50%;background:conic-gradient(var(--yel) calc(var(--p)*1%),rgba(27,27,58,.22) 0);display:grid;place-items:center;flex:none}
+.ring b{width:66px;height:66px;border-radius:50%;background:var(--ora);display:grid;place-items:center;font:700 18px Fredoka,sans-serif;text-align:center;line-height:1.1}
+.dots{display:flex;gap:6px}.dc{text-align:center}
+.dot{display:block;width:22px;height:22px;border-radius:50%;border:2px solid #1B1B3A}.dot.on{background:var(--yel)}
+@media(max-width:620px){.streak{grid-template-columns:1fr}.big{font-size:50px}}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 12px}
+.tab{flex:none;font:700 15px Nunito,sans-serif;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer}
+.tab.on{background:var(--blue);color:#fff}
+.btn{font:800 15px Nunito,sans-serif;background:var(--yel);color:#1B1B3A;border:2px solid var(--line);border-radius:12px;padding:9px 14px;box-shadow:3px 3px 0 var(--line);cursor:pointer}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+.btn.alt{background:var(--mint)}.btn.pk{background:var(--pink)}
+.btn.sm{font-size:13px;padding:5px 10px;box-shadow:2px 2px 0 var(--line)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:none;font-size:13px;padding:5px 8px}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+input,select,textarea{font:600 15px Nunito,sans-serif;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:9px 10px;min-width:0;width:100%}
+textarea{resize:vertical;min-height:62px}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.form .w{grid-column:1/-1}
+.chip{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);border-radius:999px;padding:1px 10px;font-weight:800;font-size:14px;background:var(--card)}
+.chip i{width:12px;height:12px;border-radius:50%}
+.row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:12px 0;border-top:2px dashed var(--line)}
+.row:first-of-type{border-top:0}.grow{flex:1;min-width:0}
+.acts{display:flex;flex-direction:column;gap:6px}
+.bar{height:10px;border-radius:6px;background:var(--bg);border:2px solid var(--line);overflow:hidden;margin-top:6px}.bar b{display:block;height:100%;background:var(--mint)}
+.sr{display:flex;align-items:center;gap:2px}
+.star{font-size:26px;background:none;border:0;cursor:pointer;color:var(--ink);padding:0 2px}
+.stars{color:var(--ora);letter-spacing:1px}
+.note{background:var(--bg);border-radius:10px;padding:6px 10px;margin-top:6px;font-size:14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.day{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--card);display:flex;gap:10px;align-items:flex-start}
+.day.now{background:var(--yel);color:#1B1B3A}.day.done{opacity:.6}
+.day input{width:22px;height:22px;margin-top:4px;accent-color:#2EC4A0}
+.plan{display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:center;margin:6px 0}.plan.today b{color:var(--pink)}
+.lv{border-left:10px solid var(--c)}
+.hm{display:grid;grid-template-rows:repeat(7,16px);grid-auto-flow:column;grid-auto-columns:16px;gap:3px;overflow-x:auto;padding-bottom:4px}
+.hm i{border-radius:4px;border:1px solid color-mix(in srgb,var(--line) 40%,transparent)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.tile{border:2px solid var(--line);border-radius:14px;padding:10px;text-align:center}.tile b{display:block;font:700 24px Fredoka,sans-serif}
+.bd{border:2px solid var(--line);border-radius:14px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:var(--yel);color:#1B1B3A;font-weight:800}
+.bd.off{background:var(--card);color:var(--mut);opacity:.55}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,120px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:800;transition:transform .25s;z-index:20}
+#toast.show{transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){#toast{transition:none}}
+ul{margin:6px 0;padding-left:20px}.empty{color:var(--mut);padding:8px 0}
+</style></head><body><div class="wrap" id="app"></div><div id="toast" role="status" aria-live="polite"></div>
+<script>
+const K='cp-lc-tracker-v1',$=s=>document.querySelector(s);
+const TP={Implementation:["Turn rules into code, like checkout or booking logic.","Fizz Buzz"],Math:["Pricing, discounts and the basics behind encryption.","Palindrome Number"],Strings:["Search bars, spell check and spam filters.","Valid Anagram"],Greedy:["Scheduling meetings, packing deliveries, giving change.","Assign Cookies"],Arrays:["Any list of data: orders, scores, sensor readings.","Best Time to Buy and Sell Stock"],Sorting:["Leaderboards, price filters and ranked feeds.","Merge Sorted Array"],"Two Pointers":["Merging sorted lists and matching pairs fast.","Valid Palindrome"],"Binary Search":["Finding a record fast, or the commit that broke the build.","Binary Search"],Hashing:["Caches, visit counters and duplicate detection.","Contains Duplicate"],"Brute Force":["Trying every option when the input is small.","Two Sum (brute force first)"],"Basic DP":["Route costs, savings plans and text diffs.","Climbing Stairs"],Graphs:["Maps, friend networks and build dependencies.","Flood Fill"]};
+const COL=['--pur','--blue','--mint','--ora','--pink','--yel'],TN=Object.keys(TP),OPT=TN.concat(['Revision','Contest','Rest']);
+const EX={Revision:"Open your revisit list and redo what you missed.",Contest:"Join a live or virtual contest, then upsolve.",Rest:"Keep it light. One easy problem still keeps the streak alive."};
+const QS=["One problem a day beats ten problems on Sunday.","Stuck means you are about to learn something.","Slow and correct today, fast and correct next month.","Every rated Grandmaster once had an unrated account.","Read the problem twice. Code it once.","A wrong answer is a free hint.","Revisit what you missed. That is where the rating hides.","Your streak is a promise you keep to yourself.","Think first, type second.","Today’s hard problem is next month’s warm-up.","Progress is quiet. Keep showing up.","You do not need to be fast yet. You need to be back tomorrow."];
+const BL=[['Implementation',1,6],['Math',7,11],['Strings',12,16],['Greedy',17,21],['Sorting',22,24],['Two Pointers',25,27],['Brute Force',28,30],['Binary Search',31,34],['Hashing',35,37],['Basic DP',38,39]];
+const DN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],ORD=[1,2,3,4,5,6,0];
+const WK={1:'Implementation',2:'Math',3:'Strings',4:'Greedy',5:'Sorting',6:'Contest',0:'Revision'};
+const LV=[['Unrated to Newbie','Codeforces 0 to 1199','--mint',['Solve 60 to 80 problems rated 800, one topic at a time.','Join every live Div. 3 or 4 contest and upsolve the same day.','LeetCode: 50 Easy problems by topic.']],
+['Newbie to Pupil','Codeforces 1200 to 1399','--blue',['Problems rated 900 to 1200. Learn binary search, prefix sums, basic DP.','One contest and one upsolve session per week.','LeetCode: 3 Mediums per week.']],
+['Pupil to Specialist','Codeforces 1400 to 1599','--pur',['Learn BFS, DFS, DSU and number theory basics.','Problems rated 1200 to 1500. Write down the idea of each one you missed.']],
+['Specialist to Expert','Codeforces 1600 to 1899','--pink',['Trees, shortest paths, harder DP. Solve under a timer.','Review contest mistakes in a notebook every week.']]];
+const fmt=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>fmt(new Date()),diff=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let S=null;try{S=JSON.parse(localStorage.getItem(K)||'null')}catch(e){}
+S=Object.assign({log:[],act:{},plan:Object.assign({},WK),high:[],demo:null,goal:2,rc:0},S||{});
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+let tab='today',st=0,qo=0;
+const MINS=[5,10,15,20,25,30,40,45,60,90,120];
+const chip=t=>{const i=TN.indexOf(t);return `<span class="chip"><i style="background:var(${i<0?'--mut':COL[i%6]})"></i>${esc(t)}</span>`};
+const opts=(l,s)=>l.map(x=>`<option${x===s?' selected':''}>${esc(x)}</option>`).join('');
+const note=t=>TP[t]?TP[t][0]:(EX[t]||'');
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const stars=n=>`<span class="stars" aria-label="${n} of 5 stars">${'★'.repeat(n)}${'☆'.repeat(5-n)}</span>`;
+function toast(t){const e=$('#toast');e.textContent=t;e.className='show';setTimeout(()=>e.className='',1900)}
+function streaks(){const a=Object.keys(S.act).sort();let best=0,run=0,prev=null;
+for(const k of a){run=prev&&diff(prev,k)==1?run+1:1;best=Math.max(best,run);prev=k}
+let c=0,d=new Date();if(!S.act[fmt(d)])d.setDate(d.getDate()-1);
+while(S.act[fmt(d)]){c++;d.setDate(d.getDate()-1)}return[c,best]}
+const xp=()=>S.log.length*10+S.rc*5+(S.demo?S.demo.done.length*5:0);
+const lvl=()=>{const n=Math.floor(xp()/100)+1;return[n,['Rookie','Coder','Solver','Hacker','Legend'][Math.min(4,Math.floor((n-1)/3))]]};
+function planDay(n){let t='Contest';for(const[x,a,b]of BL)if(n>=a&&n<=b)t=x;
+if(n==40)return{n,t:'Contest',cp:'Virtual contest (Div. 3 or 4, 2 hours), then upsolve.',lc:'Solve the LeetCode daily problem.'};
+if(n%7==0)return{n,t:'Revision',cp:'Re-solve 2 problems you got stuck on this week.',lc:'Redo 1 LeetCode problem you needed hints for.'};
+return{n,t,cp:(n==1?'Create your Codeforces account. ':'')+`Solve 2 to 3 Codeforces problems rated 800 with tag: ${t}.`,lc:`LeetCode Easy: ${TP[t][1]}.`}}
+const demoDay=()=>S.demo?Math.max(1,Math.min(40,diff(S.demo.start,today())+1)):0;
+const rv=()=>S.log.filter(l=>l.rv);
+function render(){
+const[c,b]=streaks(),td=today(),n=S.log.filter(l=>l.d==td).length,[lv,lt]=lvl(),R=rv().length;
+const dots=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return `<div class="dc"><b class="dot ${S.act[fmt(d)]?'on':''}"></b><small>${'SMTWTFS'[d.getDay()]}</small></div>`}).join('');
+const m=!c&&!S.act[td]?'Solve one problem today to start your streak.':S.act[td]?'Today is done. See you tomorrow.':'Log one problem today to keep your streak.';
+const T=[['today','Today'],['rev','Revisit'+(R?' ('+R+')':'')],['plan','Week'],['topics','Topics'],['ins','Insights'],['guide','Guide']];
+const V={today:vToday,rev:vRev,plan:vPlan,topics:vTopics,ins:vIns,guide:vGuide};
+$('#app').innerHTML=`<h1>Life Tracker</h1><p class="mut">CP and LeetCode, one day at a time.</p>
+<section class="streak" aria-label="Streak"><div><div class="big">🔥 ${c}<small>day streak</small></div>
+<div class="stats"><div><b>${b}</b>best</div><div><b>${S.log.length}</b>solved</div><div><b>Lv ${lv}</b>${lt}</div></div><p style="font-weight:800;margin-top:10px">${m}</p></div>
+<div class="side"><div class="ring" style="--p:${Math.min(100,n/S.goal*100)}"><b>${n}/${S.goal}<br>today</b></div><div><div class="dots">${dots}</div></div></div></section>
+<nav class="tabs">${T.map(x=>`<button class="tab ${tab==x[0]?'on':''}" onclick="go('${x[0]}')">${x[1]}</button>`).join('')}</nav>${V[tab]()}
+<p class="mut" style="text-align:center">Your data is saved in this browser only.</p>`}
+const go=t=>{tab=t;render()};
+const quoteCard=()=>`<div class="card quote"><span>“${QS[(Math.floor(Date.now()/864e5)+qo)%QS.length]}”</span><button class="btn ghost" onclick="qo++;render()">Another</button></div>`;
+function ent(l,rvTab){return `<div class="row"><div class="grow"><b>${l.p}</b> ${esc(l.n||'Untitled')} <span class="mut">${esc(l.r||'')}${l.m?' · '+l.m+' min':''}${rvTab?' · '+l.d:''}</span><br>${chip(l.t)} ${l.s?stars(l.s):''}${l.rv&&!rvTab?' <span class="chip">♻️ revisit</span>':''}
+${l.x?`<div class="note"><b>Missed:</b> ${esc(l.x)}</div>`:''}${l.y?`<div class="note"><b>Next time:</b> ${esc(l.y)}</div>`:''}</div>
+<div class="acts">${rvTab?`<button class="btn alt sm" onclick="clr(${l.id})">Solved again</button>`:`<button class="btn sm" onclick="tog(${l.id})">${l.rv?'Unmark':'Revisit'}</button>`}<button class="btn ghost" onclick="del(${l.id})">Remove</button></div></div>`}
+function vToday(){const td=today(),g=new Date().getDay(),t=S.plan[g],dd=demoDay(),p=dd?planDay(dd):null,mine=S.log.filter(l=>l.d==td),R=rv().length;
+return quoteCard()+(g==0||R?`<div class="card" style="background:var(--yel);color:#1B1B3A"><h2>${g==0?'Sunday is revisit day':'Revisit list'}</h2><p>${R?`${R} problem${R>1?'s':''} waiting for a second try.`:'Your list is empty. Nice.'}</p><button class="btn pk" style="margin-top:8px" onclick="go('rev')">Open revisit list</button></div>`:'')+
+`<div class="card"><h2>${DN[g]} topic</h2><p>${chip(t)}</p><p class="mut">${esc(note(t))}</p>${S.high.length?`<p class="mut">High topics: ${S.high.map(chip).join(' ')}</p>`:''}</div>
+${p?`<div class="card"><h2>40-day plan: Day ${p.n}</h2><p><b>CP:</b> ${esc(p.cp)}</p><p><b>LC:</b> ${esc(p.lc)}</p><button class="btn alt" style="margin-top:10px" onclick="mark(${p.n})">${S.demo.done.includes(p.n)?'Undo day '+p.n:'Mark day '+p.n+' done'}</button></div>`:''}
+<div class="card"><h2>Log a problem</h2><div class="form">
+<select id="lp" aria-label="Platform"><option>CP</option><option>LC</option></select>
+<select id="lt" aria-label="Topic">${opts(TN,TN.includes(t)?t:TN[0])}</select>
+<input id="ln" placeholder="Problem name (optional)"><input id="lr" placeholder="Rating or level (800, Easy)">
+<select id="lm" aria-label="Time taken"><option value="0">Time taken</option>${MINS.map(x=>`<option value="${x}">${x} mins</option>`).join('')}</select>
+<div><div class="sr" id="sr">${starsHtml()}</div><p class="mut" id="sh">${hint()}</p></div>
+<textarea id="lx" class="w" placeholder="What did I miss?"></textarea><textarea id="ly" class="w" placeholder="What should I think about next time?"></textarea></div>
+<button class="btn" onclick="add()">Add to today</button></div>
+<div class="card"><h2>Solved today</h2>${mine.length?mine.map(l=>ent(l)).join(''):'<p class="empty">Nothing yet. Pick a problem and log it above.</p>'}</div>`}
+const starsHtml=()=>[1,2,3,4,5].map(i=>`<button type="button" class="star" onclick="setSt(${i})" aria-label="${i} stars">${i<=st?'★':'☆'}</button>`).join('');
+const hint=()=>st==0?'Rate it. 3 stars or less goes to your revisit list.':st<=3?'This one will go to your revisit list.':'Solid. No revisit needed.';
+function setSt(i){st=i;$('#sr').innerHTML=starsHtml();$('#sh').textContent=hint()}
+function add(){const m=parseInt($('#lm').value)||0;
+S.log.push({id:Date.now(),d:today(),p:$('#lp').value,t:$('#lt').value,n:$('#ln').value.trim(),r:$('#lr').value.trim(),m,s:st,x:$('#lx').value.trim(),y:$('#ly').value.trim(),rv:st>0&&st<=3});
+S.act[today()]=1;const r=st>0&&st<=3;st=0;save();render();toast(r?'Logged +10 XP. Added to revisit list.':'Logged +10 XP. Keep going!')}
+function del(id){S.log=S.log.filter(l=>l.id!=id);const td=today();if(!S.log.some(l=>l.d==td)&&!(S.demo&&S.demo.doneToday==td))delete S.act[td];save();render()}
+function tog(id){const l=S.log.find(x=>x.id==id);l.rv=!l.rv;save();render()}
+function clr(id){const l=S.log.find(x=>x.id==id);l.rv=false;l.rd=today();S.rc++;S.act[today()]=1;save();render();toast('Revisited +5 XP. Nice work!')}
+function vRev(){const L=rv().sort((a,b)=>a.id-b.id),g=new Date().getDay();
+return `<div class="card"><h2>Revisit list</h2><p class="mut">Problems rated 3 stars or less land here. ${g==0?'Today is Sunday, so clear as many as you can.':'Plan to clear them on Sunday.'}</p>
+${L.length?L.map(l=>ent(l,1)).join(''):'<p class="empty">Nothing to revisit. Rate a problem 3 stars or less and it shows up here.</p>'}</div>
+<div class="card"><h2>${S.rc} revisits cleared</h2><p class="mut">Each cleared problem earns 5 XP.</p></div>`}
+function vPlan(){const g=new Date().getDay();
+return `<div class="card"><h2>Weekly topic plan</h2><p class="mut">Change any day, any time. It saves automatically.</p>
+${ORD.map(d=>`<div class="plan ${d==g?'today':''}"><b>${DN[d].slice(0,3)}${d==g?' (today)':''}</b><select aria-label="${DN[d]}" onchange="setP(${d},this.value)">${opts(OPT,S.plan[d])}</select></div>`).join('')}</div>
+<div class="card"><h2>Daily goal</h2><div style="display:flex;gap:12px;align-items:center"><button class="btn sm" onclick="goal(-1)" aria-label="Lower goal">−</button><b style="font:700 24px Fredoka,sans-serif">${S.goal} problems</b><button class="btn sm" onclick="goal(1)" aria-label="Raise goal">+</button></div></div>
+<div class="card"><h2>High topics</h2><p>${S.high.length?S.high.map(chip).join(' '):'<span class="empty">Star topics on the Topics tab.</span>'}</p></div>`}
+const setP=(d,v)=>{S.plan[d]=v;save()};
+const goal=d=>{S.goal=Math.max(1,Math.min(10,S.goal+d));save();render()};
+const hi=t=>{S.high=S.high.includes(t)?S.high.filter(x=>x!=t):S.high.concat(t);save();render()};
+function vTopics(){const L=TN.slice().sort((a,b)=>(S.high.includes(b)-S.high.includes(a))||(TN.indexOf(a)-TN.indexOf(b))),mx=Math.max(1,...TN.map(t=>S.log.filter(l=>l.t==t).length));
+return `<div class="card"><h2>Topic progress</h2><p class="mut">Star a topic to make it a high topic.</p>${L.map(t=>{const a=S.log.filter(l=>l.t==t),s=a.filter(l=>l.s),m=a.filter(l=>l.m),h=S.high.includes(t);
+return `<div class="row"><div class="grow">${chip(t)} <span class="mut">${a.length} solved${s.length?', avg '+avg(s.map(l=>l.s)).toFixed(1)+' stars':''}${m.length?', avg '+Math.round(avg(m.map(l=>l.m)))+' min':''}</span><p class="mut">${esc(note(t))}</p><div class="bar"><b style="width:${a.length/mx*100}%;background:var(${COL[TN.indexOf(t)%6]})"></b></div></div><button class="star" aria-label="${h?'Remove high topic':'Mark high topic'}" onclick="hi('${t}')">${h?'⭐':'☆'}</button></div>`}).join('')}</div>`}
+function vIns(){const td=today(),C={};S.log.forEach(l=>C[l.d]=(C[l.d]||0)+1);
+const s0=new Date();s0.setDate(s0.getDate()-s0.getDay()-77);
+const cells=[...Array(84)].map((_,i)=>{const d=new Date(s0);d.setDate(d.getDate()+i);const k=fmt(d),n=C[k]||0;return k>td?'<i style="visibility:hidden"></i>':`<i title="${k}: ${n}" style="background:${n?`color-mix(in srgb,var(--mint) ${Math.min(100,35+n*20)}%,transparent)`:'transparent'}"></i>`}).join('');
+const wk=S.log.filter(l=>diff(l.d,td)<7),wm=wk.reduce((a,l)=>a+l.m,0),wr=S.log.filter(l=>l.rd&&diff(l.rd,td)<7).length;
+const sl=S.log.filter(l=>l.s),ml=S.log.filter(l=>l.m),[c,b]=streaks(),L=S.log.length;
+const tt=TN.map(t=>[t,S.log.filter(l=>l.t==t&&l.s).map(l=>l.s)]).filter(x=>x[1].length).map(x=>[x[0],avg(x[1])]).sort((a,b)=>a[1]-b[1]);
+const B=[['🌱','First solve',L>=1],['🎯','10 solved',L>=10],['💪','50 solved',L>=50],['🚀','100 solved',L>=100],['🔥','3-day streak',b>=3],['⚡','7-day streak',b>=7],['🏆','30-day streak',b>=30],['♻️','5 revisits cleared',S.rc>=5],['⏱️','Solved in 10 min or less',S.log.some(l=>l.m>0&&l.m<=10)]];
+return `<div class="card"><h2>Last 12 weeks</h2><div class="hm">${cells}</div></div>
+<div class="card"><h2>This week</h2><div class="tiles"><div class="tile"><b>${wk.length}</b>solved</div><div class="tile"><b>${Math.round(wm/6)/10}h</b>practice time</div><div class="tile"><b>${wr}</b>revisits cleared</div><div class="tile"><b>${sl.length?avg(sl.map(l=>l.s)).toFixed(1):'-'}</b>avg stars</div><div class="tile"><b>${ml.length?Math.round(avg(ml.map(l=>l.m))):'-'}</b>avg minutes</div></div>
+${tt.length?`<p style="margin-top:12px"><b>Strongest topic:</b> ${esc(tt[tt.length-1][0])}. <b>Needs work:</b> ${esc(tt[0][0])}.</p>`:'<p class="mut" style="margin-top:12px">Rate a few problems to see your strongest and weakest topics.</p>'}</div>
+<div class="card"><h2>Badges</h2><div class="tiles">${B.map(x=>`<div class="bd ${x[2]?'':'off'}"><span>${x[0]}</span>${x[1]}</div>`).join('')}</div></div>`}
+function vGuide(){const d40=!S.demo?`<div class="card"><h2>Unrated to Newbie in 40 days</h2><p>Ten topic blocks, a revision day every week and a final virtual contest. Each day has one Codeforces task and one LeetCode task.</p><button class="btn alt" style="margin-top:10px" onclick="startDemo()">Start the 40-day plan</button></div>`:(()=>{const dd=demoDay(),n=S.demo.done.length;
+return `<div class="card"><h2>40-day plan: ${n} of 40 done</h2><div class="bar"><b style="width:${n/40*100}%"></b></div><p class="mut">Today is day ${dd}.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" onclick="applyW()">Use as my weekly plan</button><button class="btn ghost" onclick="stopDemo()">Reset plan</button></div></div>
+<div class="grid2" style="margin-bottom:16px">${[...Array(40)].map((_,i)=>{const p=planDay(i+1),d=S.demo.done.includes(p.n);return `<div class="day ${p.n==dd?'now':''} ${d?'done':''}"><input type="checkbox" aria-label="Day ${p.n} done" ${d?'checked':''} onchange="mark(${p.n})"><div><b>Day ${p.n}</b> ${chip(p.t)}<p style="font-size:14px">CP: ${esc(p.cp)}</p><p style="font-size:14px">LC: ${esc(p.lc)}</p></div></div>`}).join('')}</div>`})();
+return d40+LV.map(v=>`<div class="card lv" style="--c:var(${v[2]})"><h2>${v[0]}</h2><p class="mut">${v[1]}</p><ul>${v[3].map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}
+const startDemo=()=>{S.demo={start:today(),done:[]};save();render();scrollTo(0,0)};
+const stopDemo=()=>{S.demo=null;save();render()};
+function mark(n){const d=S.demo.done;if(d.includes(n))S.demo.done=d.filter(x=>x!=n);else{d.push(n);S.act[today()]=1;S.demo.doneToday=today()}save();render()}
+const applyW=()=>{S.plan=Object.assign({},WK);save();tab='plan';render()};
+render();
+try{const ic=n=>{const c=document.createElement('canvas');c.width=c.height=n;const x=c.getContext('2d');x.fillStyle='#FF8A3D';x.fillRect(0,0,n,n);x.font=Math.round(n*.55)+'px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('🔥',n/2,n*.54);return c.toDataURL('image/png')};
+const i1=ic(192),i2=ic(512),a=document.createElement('link');a.rel='apple-touch-icon';a.href=i1;document.head.appendChild(a);
+const mf={name:'Life Tracker',short_name:'Life Tracker',display:'standalone',start_url:location.href,background_color:'#EAF2FF',theme_color:'#FF8A3D',icons:[{src:i1,sizes:'192x192',type:'image/png',purpose:'any'},{src:i2,sizes:'512x512',type:'image/png',purpose:'any'}]};
+const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:'application/manifest+json'}));document.head.appendChild(l)}catch(e){}
+</script></body></html>
